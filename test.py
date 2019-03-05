@@ -74,8 +74,23 @@ def draw_convexitydefects(cnt):
 		cv2.circle(frame,far,5,[0,0,255],-1)             
 		count += 1                                      
 
+def getROI(frame, img_range, size):
+	#get the region of interest of a picture and resize its zise
+	border_x =  int((img_range[2] - img_range[0])/6)
+	border_y =  int((img_range[3] - img_range[1])/6)
+	x_min = img_range[0] - border_x
+	y_min = img_range[1] - border_y
+	x_max = img_range[2] + border_x
+	y_max = img_range[3] + border_y
+	ROI = frame[y_min:y_max,x_min:x_max]  
+	ROI = cv2.resize(ROI, (size[0], size[1]))
+	return ROI
+
+
 	
-frame = cv2.imread('D:\\pic\\pic_4.bmp') 
+	
+	
+frame = cv2.imread('D:\\GitHub\\gesture_tracking\\picture\\pic_2.bmp') 
 mask = process_img(frame)
 
 _,contours,_ = cv2.findContours(mask,cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE)
@@ -93,6 +108,9 @@ cv2.circle(frame, gra_centre,8,[0,0,255],-1)
 
 img_range = find_range_hull(hull)
 draw_rectangle(frame, img_range)
+
+ROI = getROI(frame, img_range, (60,60))
+cv2.imshow('1', ROI)
 
 cv2.drawContours(frame,[cnt],0,(255,0,0),3)
 cv2.drawContours(frame,[hull],0,(0,255,0),3)
